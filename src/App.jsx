@@ -10,12 +10,14 @@ function App() {
 
   return (
     <>
+      <h1>Todo List</h1>
       <TodoList todoList={todoList} setTodoList={setTodoList} />
       <hr />
       <TodoInput todoList={todoList} setTodoList={setTodoList} />
     </>
   );
 }
+
 
 function TodoInput({ todoList, setTodoList }) {
   const [inputValue, setInputValue] = useState("");
@@ -52,32 +54,56 @@ function TodoList({ todoList, setTodoList }) {
 
 function Todo({ todo, setTodoList }) {
   const [inputValue, setInputValue] = useState("");
+  const [isEditing, setIsEditing] = useState(false)
+
   return (
-    <li>
-      {todo.content}
-      <input
-        value={inputValue}
-        onChange={(event) => setInputValue(event.target.value)}
-      />
-      <button
-        onClick={() => {
-          setTodoList((prev) =>
-            prev.map((el) =>
-              el.id === todo.id ? { ...el, content: inputValue } : el
+    <li className="list">
+      {isEditing ?
+        (<>
+          <div className="content">
+            {todo.content}
+          </div>
+          <input
+            value={inputValue}
+            onChange={(event) => setInputValue(event.target.value)}
+            className="editInput"
+          />
+          <button
+            onClick={() => {
+              setTodoList((prev) =>
+                prev.map((el) =>
+                  el.id === todo.id ? { ...el, content: inputValue } : el
             )
           );
+          setIsEditing(false)
+          setInputValue('')
         }}
-      >
-        수정
-      </button>
+            className="ok"
+          >
+            👌
+          </button>
+        </>)
+        :
+        (<>
+          <input type="checkbox" className="checkbox"></input>
+          <div className="content">
+            {todo.content}
+          </div>
+          <button
+            onClick={() => setIsEditing(true)}
+            className="edit"
+          >✏️</button>
+        </>)
+      }
       <button
         onClick={() => {
           setTodoList((prev) => {
             return prev.filter((el) => el.id !== todo.id);
           });
         }}
+        className="delBtn"
       >
-        삭제
+        ❌
       </button>
     </li>
   );
